@@ -1,5 +1,5 @@
 # 통계학입문 과제 2 — 단측 Z-가설검정 (Python 학생용)
-# 이름: __________  학번: __________
+# 이름: SOKOLOVA ANASTASIIA  학번: 2026123091
 # 목표: Z-검정, 임계값, p-value, if/else 판단, 기각역 그래프를 작성함
 # 실행 전: pip install numpy scipy matplotlib
 
@@ -9,12 +9,12 @@ import matplotlib.pyplot as plt
 
 # [상황] 음료의 공칭 평균 용량은 500mL임.
 # 36개 표본의 평균은 496mL이며, 모표준편차는 12mL로 알려져 있음.
-# 실제 평균이 500mL보다 작은지 유의수준 5%에서 검정함.
+# 실제 평균이 500mL보다 작은지 (단측, <) 유의수준 5%에서 검정함.
 # 주의: 모표준편차가 알려졌으므로 단일표본 Z-검정을 사용함.
 
 # 문제 1. 가설을 주석으로 작성할 것
-# H0: __________________________
-# H1: __________________________
+# H0: μ = 500
+# H1: μ < 500 
 
 mu_0 = 500
 x_bar = 496
@@ -23,18 +23,19 @@ n = 36
 alpha = 0.05
 
 # 문제 2. 표준오차를 계산할 것: sigma / sqrt(n)
-standard_error = None  # TODO
+standard_error = standard_error = sigma / np.sqrt(n)  # TODO
 
 # 문제 3. Z-검정통계량을 계산할 것: (x_bar - mu_0) / standard_error
-z_stat = None  # TODO
+z_stat = (x_bar - mu_0) / standard_error  # TODO
+#or we should wright like z_stat = (496 - 500) / standard_error (?)
 
 # 문제 4. 왼쪽 단측검정의 임계값을 구할 것
 # stats.norm.ppf(alpha)는 왼쪽 꼬리의 면적이 alpha가 되는 지점을 반환함
-critical_z = None  # TODO
+critical_z = stats.norm.ppf(alpha)  # TODO
 
 # 문제 5. 왼쪽 단측검정의 p-value를 구할 것
 # stats.norm.cdf(z_stat)는 P(Z <= z_stat)을 반환함
-p_value = None  # TODO
+p_value = stats.norm.cdf(z_stat)  # TODO
 
 print('2. 표준오차:', standard_error)
 print('3. Z-검정통계량:', z_stat)
@@ -57,6 +58,9 @@ if z_stat is not None and critical_z is not None:
     plt.plot(x, y, label='Standard normal density')
     rejection_x = x[x <= critical_z]
     rejection_y = stats.norm.pdf(rejection_x)
+    plt.fill_between(rejection_x, rejection_y, alpha=0.3, label='Rejection region')
+    plt.axvline(critical_z, linestyle='--', label='Critical Z')
+    plt.axvline(z_stat, linestyle=':', label='Observed Z')
     # TODO: 아래 줄을 완성하여 왼쪽 기각역을 음영 처리할 것
     # plt.fill_between(__________, __________, alpha=0.3, label='Rejection region')
     # TODO: 임계값과 검정통계량에 각각 수직선을 그릴 것
@@ -70,4 +74,5 @@ if z_stat is not None and critical_z is not None:
     plt.show()
 
 # 문제 8. 결과의 의미를 일상적인 언어로 2~3문장 작성할 것
-# 답:
+# 답: p값은 약 0.0228로 유의수준 0.05보다 작으므로 귀무가설을 기각한다.
+# 이 표본은 음료의 실제 평균 용량이 500mL보다 작다는 근거를 보여 준다.
